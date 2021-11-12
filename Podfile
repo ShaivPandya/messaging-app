@@ -2,7 +2,7 @@
 # platform :ios, '9.0'
 
 source 'https://github.com/CocoaPods/Specs.git'
-target 'Messenger' do
+target 'MessagingApp' do
   use_frameworks!
 
 # Firebase
