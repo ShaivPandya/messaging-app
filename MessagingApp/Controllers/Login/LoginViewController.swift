@@ -214,6 +214,26 @@ extension LoginViewController: LoginButtonDelegate {
             
             print("\(result)")
             
+            guard let userName = result["name"] as? String,
+                  let email = result["email"] as? String else {
+                      print("Failed to get email and name from fb result.")
+                      return
+            }
+            
+            let nameComponents = userName.components(separatedBy: " ")
+            
+            let firstName = nameComponents[0]
+            let lastName = nameComponents[1]
+            print(firstName)
+            
+            Databasemanager.shared.userExists(with: email, completion: { exists in
+                if !exists {
+                    Databasemanager.shared.insertUser(with: ChatAppUser(firstName: firstName,
+                                                                        lastName: lastName,
+                                                                        emailAddress: email))
+                }
+            })
+            
             let credential = FacebookAuthProvider.credential(withAccessToken: token)
             
             FirebaseAuth.Auth.auth().signIn(with: credential, completion: { [weak self] authResult, error in
