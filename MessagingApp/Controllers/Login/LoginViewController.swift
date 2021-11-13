@@ -8,8 +8,11 @@
 import UIKit
 import Firebase
 import FBSDKLoginKit
+import JGProgressHUD
 
 class LoginViewController: UIViewController {
+    
+    private let spinner = JGProgressHUD(style: .dark)
     
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -74,15 +77,15 @@ class LoginViewController: UIViewController {
         button.permissions = ["public_profile", "email"]
         return button
     }()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Log In"
         view.backgroundColor = .white
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Register",
-                            style: .done,
-                            target: self,
-                            action: #selector(didTapRegister))
+                                                            style: .done,
+                                                            target: self,
+                                                            action: #selector(didTapRegister))
         
         loginButton.addTarget(self,
                               action: #selector(loginButtonTapped),
@@ -114,19 +117,19 @@ class LoginViewController: UIViewController {
         emailField.frame = CGRect(x: 30,
                                   y: imageView.bottom+10,
                                   width: scrollView.width-60,
-                                 height: 52)
+                                  height: 52)
         passwordField.frame = CGRect(x: 30,
-                                  y: emailField.bottom+10,
-                                  width: scrollView.width-60,
-                                 height: 52)
+                                     y: emailField.bottom+10,
+                                     width: scrollView.width-60,
+                                     height: 52)
         loginButton.frame = CGRect(x: 30,
-                                  y: passwordField.bottom+10,
-                                  width: scrollView.width-60,
-                                  height: 52)
+                                   y: passwordField.bottom+10,
+                                   width: scrollView.width-60,
+                                   height: 52)
         facebookLoginButton.frame = CGRect(x: 30,
-                                  y: loginButton.bottom+10,
-                                  width: scrollView.width-60,
-                                  height: 52)
+                                           y: loginButton.bottom+10,
+                                           width: scrollView.width-60,
+                                           height: 52)
         facebookLoginButton.frame.origin.y = loginButton.bottom + 20
     }
     
@@ -141,17 +144,25 @@ class LoginViewController: UIViewController {
               !password.isEmpty, password.count >= 6 else {
                   alertUserLoginError()
                   return
-        }
+              }
+        
+        spinner.show(in: view)
         
         // Firebase Login
         FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password, completion: { [weak self] authResult, error in
             guard let strongSelf = self else {
                 return
             }
+            
+            DispatchQueue.main.async {
+                strongSelf.spinner.dismiss()
+            }
+            
             guard let result = authResult, error == nil else {
                 print("Failed to log in user with email: \(email)")
                 return
             }
+            
             let user = result.user
             print("Logged In User: \(user)")
             strongSelf.navigationController?.dismiss(animated: true, completion: nil)
@@ -173,7 +184,7 @@ class LoginViewController: UIViewController {
         vc.title = "Create Account"
         navigationController?.pushViewController(vc, animated: true)
     }
-
+    
 }
 
 extension LoginViewController: UITextFieldDelegate {
@@ -201,36 +212,67 @@ extension LoginViewController: LoginButtonDelegate {
         }
         
         let facebookRequest = GraphRequest(graphPath: "me",
-                                           parameters: ["fields": "email, name"],
+                                           parameters: ["fields":
+                                                            "email, first_name, last_name, picture.type(large)"],
                                            tokenString: token,
                                            version: nil,
                                            httpMethod: .get)
         
         facebookRequest.start(completion: { _, result, error in
             guard let result = result as? [String: Any],
-                error == nil else {
-                    return
-            }
+                  error == nil else {
+                      return
+                  }
             
             print("\(result)")
             
-            guard let userName = result["name"] as? String,
-                  let email = result["email"] as? String else {
+            guard let firstName = result["first_name"] as? String,
+                  let lastName = result["last_name"] as? String,
+                  let email = result["email"] as? String,
+                  let picture = result["picture"] as? [String: Any?],
+                  let data = picture["data"] as? [String: Any?],
+                  let pictureUrl = data["url"] as? String else {
                       print("Failed to get email and name from fb result.")
                       return
-            }
-            
-            let nameComponents = userName.components(separatedBy: " ")
-            
-            let firstName = nameComponents[0]
-            let lastName = nameComponents[1]
-            print(firstName)
+                  }
             
             Databasemanager.shared.userExists(with: email, completion: { exists in
                 if !exists {
-                    Databasemanager.shared.insertUser(with: ChatAppUser(firstName: firstName,
-                                                                        lastName: lastName,
-                                                                        emailAddress: email))
+                    let chatUser = ChatAppUser(firstName: firstName,
+                                               lastName: lastName,
+                                               emailAddress: email)
+                    Databasemanager.shared.insertUser(with: chatUser, completion: { success in
+                        if success {
+                            guard let url = URL(string: pictureUrl) else {
+                                return
+                            }
+                            
+                            print("Downloading data from Facebook image")
+                            
+                            URLSession.shared.dataTask(with: url, completionHandler: { data, _, _ in
+                                guard let data = data else {
+                                    print("Failed to get data from Facebook")
+                                    return
+                                }
+                                
+                                print("Got data from Facebook, uploading...")
+                                
+                                // upload image
+                                let fileName = chatUser.profilePictureFileName
+                                StorageManager.shared.uploadProfilePicture(with: data,
+                                                                           fileName: fileName,
+                                                                           completion: { result in
+                                    switch result {
+                                    case .success(let downloadUrl):
+                                        UserDefaults.standard.set(downloadUrl, forKey: "profile_picture_url")
+                                        print(downloadUrl)
+                                    case .failure(let error):
+                                        print("Storage manager error: \(error)")
+                                    }
+                                })
+                            }).resume()
+                        }
+                    })
                 }
             })
             
