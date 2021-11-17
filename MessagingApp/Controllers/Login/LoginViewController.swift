@@ -210,7 +210,7 @@ extension LoginViewController: LoginButtonDelegate {
     
     func loginButton(_ loginButton: FBLoginButton, didCompleteWith result: LoginManagerLoginResult?, error: Error?) {
         guard let token = result?.token?.tokenString else {
-            print("User failed to log in with facebook")
+            print("User failed to log in with Facebook")
             return
         }
         
@@ -235,7 +235,7 @@ extension LoginViewController: LoginButtonDelegate {
                   let picture = result["picture"] as? [String: Any],
                   let data = picture["data"] as? [String: Any],
                   let pictureUrl = data["url"] as? String else {
-                      print("Faield to get email and name from fb result")
+                      print("Failed to get email and name from fb result")
                       return
                   }
             
@@ -254,15 +254,15 @@ extension LoginViewController: LoginButtonDelegate {
                                 return
                             }
                             
-                            print("Downloading data from facebook image")
+                            print("Downloading data from Facebook image")
                             
                             URLSession.shared.dataTask(with: url, completionHandler: { data, _,_ in
                                 guard let data = data else {
-                                    print("Failed to get data from facebook")
+                                    print("Failed to get data from Facebook")
                                     return
                                 }
                                 
-                                print("got data from FB, uploading...")
+                                print("Got data from Facebook, uploading...")
                                 
                                 // upload iamge
                                 let filename = chatUser.profilePictureFileName
@@ -272,7 +272,7 @@ extension LoginViewController: LoginButtonDelegate {
                                         UserDefaults.standard.set(downloadUrl, forKey: "profile_picture_url")
                                         print(downloadUrl)
                                     case .failure(let error):
-                                        print("Storage maanger error: \(error)")
+                                        print("Storage manager error: \(error)")
                                     }
                                 })
                             }).resume()
