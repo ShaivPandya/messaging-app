@@ -64,9 +64,9 @@ class ConversationsViewController: UIViewController {
 
         print("starting conversation fetch...")
         
-        let safeEmail = Databasemanager.safeEmail(emailAddress: email)
+        let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
         
-        Databasemanager.shared.getAllConversations(for: safeEmail, completion: { [weak self] result in
+        DatabaseManager.shared.getAllConversations(for: safeEmail, completion: { [weak self] result in
             switch result {
             case .success(let conversations):
                 print("successfully got conversation models")

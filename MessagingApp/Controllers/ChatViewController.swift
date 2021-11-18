@@ -97,7 +97,7 @@ class ChatViewController: MessagesViewController {
     }
     
     private func listenForMessages(id: String, shouldScrollToLastItem: Bool) {
-        Databasemanager.shared.getAllMessagesForConversation(with: id, completion: { [weak self] result in
+        DatabaseManager.shared.getAllMessagesForConversation(with: id, completion: { [weak self] result in
             switch result {
             case .success(let messages):
                 print("success in getting messages: \(messages)")
@@ -146,7 +146,7 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
         
         if isNewConversation {
             // Create convo in database
-            Databasemanager.shared.createNewConversation(with: otherUserEmail, name: self.title ?? "User", firstMessage: message, completion: { [weak self] success in
+            DatabaseManager.shared.createNewConversation(with: otherUserEmail, name: self.title ?? "User", firstMessage: message, completion: { [weak self] success in
                 if success {
                     print("Message sent")
                     self?.isNewConversation = false
@@ -157,20 +157,35 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
             })
         }
         else {
+            guard let conversationId = conversationId, let name = self.title else {
+                return
+            }
             // append to existing conversation data
+            DatabaseManager.shared.sendMessage(to: conversationId, otherUserEmail: otherUserEmail, name: name, newMessage: message, completion: { [weak self] success in
+                if success {
+                    self?.messageInputBar.inputTextView.text = nil
+                    print("message sent")
+                }
+                else {
+                    print("failed to send")
+                }
+            })
         }
     }
     
     private func createMessageId() -> String? {
-        // date, otherUserEmail, senderEmail, randomInt
+        // date, otherUesrEmail, senderEmail, randomInt
         guard let currentUserEmail = UserDefaults.standard.value(forKey: "email") as? String else {
             return nil
         }
-        let safeCurrentEmail = Databasemanager.safeEmail(emailAddress: currentUserEmail)
+        
+        let safeCurrentEmail = DatabaseManager.safeEmail(emailAddress: currentUserEmail)
+        
         let dateString = Self.dateFormatter.string(from: Date())
         let newIdentifier = "\(otherUserEmail)_\(safeCurrentEmail)_\(dateString)"
         
-        print("Created message id: \(newIdentifier)")
+        print("created message id: \(newIdentifier)")
+        
         return newIdentifier
     }
 }

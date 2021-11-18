@@ -113,7 +113,7 @@ extension NewConversationViewController: UISearchBarDelegate {
         }
         else {
             // if not, fetch then filter
-            Databasemanager.shared.getAllUsers(completion: { [weak self] result in
+            DatabaseManager.shared.getAllUsers(completion: { [weak self] result in
                 switch result {
                 case .success(let usersCollection):
                     self?.hasFetched = true

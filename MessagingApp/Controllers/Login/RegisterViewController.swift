@@ -199,7 +199,7 @@ class RegisterViewController: UIViewController {
         
         // Firebase Login
         
-        Databasemanager.shared.userExists(with: email, completion: { [weak self] exists in
+        DatabaseManager.shared.userExists(with: email, completion: { [weak self] exists in
             guard let strongSelf = self else {
                 return
             }
@@ -224,7 +224,7 @@ class RegisterViewController: UIViewController {
                                            lastName: lastName,
                                            emailAddress: email)
                 
-                Databasemanager.shared.insertUser(with: chatUser, completion: { success in
+                DatabaseManager.shared.insertUser(with: chatUser, completion: { success in
                     if success {
                         // upload image
                         guard let image = strongSelf.imageView.image,
@@ -270,7 +270,7 @@ class RegisterViewController: UIViewController {
 }
 
 extension RegisterViewController: UITextFieldDelegate {
-    func textFieldShouldReturn( textField: UITextField) -> Bool {
+    func textFieldShouldReturn( _ textField: UITextField) -> Bool {
         
         if textField == emailField {
             passwordField.becomeFirstResponder()
