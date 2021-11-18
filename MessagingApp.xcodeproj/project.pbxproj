@@ -26,6 +26,7 @@
 		D1E07756273759E500506014 /* NewConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E07755273759E500506014 /* NewConversationViewController.swift */; };
 		D1E0775827375A0400506014 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E0775727375A0400506014 /* ProfileViewController.swift */; };
 		D1E0775B2737618800506014 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E0775A2737618800506014 /* Extensions.swift */; };
+		D1EA1982274705E0004B0F4B /* LocationPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1EA1981274705E0004B0F4B /* LocationPickerViewController.swift */; };
 		D1FD2E5F273B4D8800ECEE50 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D1FD2E5E273B4D8800ECEE50 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
@@ -52,6 +53,7 @@
 		D1E07755273759E500506014 /* NewConversationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewConversationViewController.swift; sourceTree = "<group>"; };
 		D1E0775727375A0400506014 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		D1E0775A2737618800506014 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		D1EA1981274705E0004B0F4B /* LocationPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPickerViewController.swift; sourceTree = "<group>"; };
 		D1FD2E5E273B4D8800ECEE50 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D400B0BC6808A3E8382226C9 /* Pods_MessagingApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MessagingApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -127,6 +129,7 @@
 				D1E07755273759E500506014 /* NewConversationViewController.swift */,
 				D1E0775727375A0400506014 /* ProfileViewController.swift */,
 				D1381FC6273F81B500709385 /* ChatViewController.swift */,
+				D1EA1981274705E0004B0F4B /* LocationPickerViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -317,6 +320,7 @@
 				D1381FC7273F81B500709385 /* ChatViewController.swift in Sources */,
 				D1E07752273759A300506014 /* PhotoViewerViewController.swift in Sources */,
 				D10571E727406D5C006C3441 /* StorageManager.swift in Sources */,
+				D1EA1982274705E0004B0F4B /* LocationPickerViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
