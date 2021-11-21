@@ -11,7 +11,7 @@ import MessageKit
 import CoreLocation
 
 final class DatabaseManager {
-    static let shared = DatabaseManager()
+    public static let shared = DatabaseManager()
     private let database = Database.database().reference()
     
     static func safeEmail(emailAddress: String) -> String {
@@ -23,7 +23,7 @@ final class DatabaseManager {
 
 extension DatabaseManager {
     public func getDataFor(path: String, completion: @escaping (Result<Any, Error>) -> Void) {
-        self.database.child("\(path)").observeSingleEvent(of: .value, with: { snapshot in
+        database.child("\(path)").observeSingleEvent(of: .value, with: { snapshot in
             guard let value = snapshot.value else {
                 completion(.failure(DatabaseError.failedToFetch))
                 return
@@ -129,7 +129,7 @@ extension DatabaseManager {
         public var localizedDescription: String {
             switch self {
             case .failedToFetch:
-                return "This means blah failed"
+                return "Failed"
             }
         }
     }

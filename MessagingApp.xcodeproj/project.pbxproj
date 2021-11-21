@@ -122,8 +122,8 @@
 		D1E077472737564600506014 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				D1E077372737553200506014 /* ConversationsViewController.swift */,
 				D1E0775927375C1D00506014 /* Login */,
+				D1E077372737553200506014 /* ConversationsViewController.swift */,
 				D1E07751273759A300506014 /* PhotoViewerViewController.swift */,
 				D1E07753273759C200506014 /* VideoPlayerViewController.swift */,
 				D1E07755273759E500506014 /* NewConversationViewController.swift */,
